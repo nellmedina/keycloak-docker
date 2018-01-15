@@ -13,18 +13,18 @@ services:
       volumes:
         - keycloak_postgresql_volume:/var/lib/postgresql/data
   keycloak:
-      image: jboss/keycloak-postgres
+      image: jboss/keycloak
       container_name: keycloak_server
       restart: unless-stopped
       environment:
-        - KEYCLOAK_LOGLEVEL=DEBUG
-        - POSTGRES_USER=keycloak
         - POSTGRES_DATABASE=keycloak
+        - POSTGRES_USER=keycloak
         - POSTGRES_PASSWORD=keycloak
-        - POSTGRES_PORT_5432_TCP_ADDR=postgres
-        - POSTGRES_PORT_5432_TCP_PORT=5432
+        - PROXY_ADDRESS_FORWARDING=true
         - KEYCLOAK_USER=admin
         - KEYCLOAK_PASSWORD=admin
+        - POSTGRES_PORT_5432_TCP_ADDR=postgres
+        - POSTGRES_PORT_5432_TCP_PORT=5432
       links:
         - keycloak_postgres:postgres
       ports:
