@@ -28,7 +28,6 @@ services:
       links:
         - keycloak_postgres:postgres
       ports:
-        - "443:8443"
         - "18081:8080"
       volumes:
         - keycloak_volume:/data
