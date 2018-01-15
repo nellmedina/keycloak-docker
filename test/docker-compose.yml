@@ -1,0 +1,43 @@
+version: '2'
+
+services:
+  nginx:
+    image: blacklabelops/nginx
+    container_name: nginx_blacklabel_prod
+    ports:
+      - '443:443'
+      - '80:80'
+    volumes:
+      - nginx_volume:/home/nginx
+      - letsencrypt_certificates:/etc/letsencrypt
+      - letsencrypt_challenges:/var/www/letsencrypt
+    environment:
+      - 'SERVER3SERVER_NAME=${KEYCLOAK_DOMAIN_NAME}'
+      - 'SERVER3REVERSE_PROXY_LOCATION1=/'
+      - 'SERVER3REVERSE_PROXY_PASS1=http://keycloak:18081/'
+      - 'SERVER3HTTPS_ENABLED=${KEYCLOAK_HTTPS}'
+      - 'SERVER3HTTP_ENABLED=${KEYCLOAK_HTTP}'
+      - 'SERVER3LETSENCRYPT_CERTIFICATES=${KEYCLOAK_HTTPS}'
+      - 'SERVER3CERTIFICATE_FILE=/etc/letsencrypt/live/${KEYCLOAK_DOMAIN_NAME_PARENT}/fullchain.pem'
+      - 'SERVER3CERTIFICATE_KEY=/etc/letsencrypt/live/${KEYCLOAK_DOMAIN_NAME_PARENT}/privkey.pem'
+      - 'SERVER3CERTIFICATE_TRUSTED=/etc/letsencrypt/live/${KEYCLOAK_DOMAIN_NAME_PARENT}/fullchain.pem'
+      - 'SERVER3PROXY_APPLICATION=keycloak'
+  keycloak:
+    image: jboss/keycloak
+    container_name: keycloak_server
+    hostname: keycloak
+    restart: unless-stopped
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+      - PROXY_ADDRESS_FORWARDING=true
+    ports:
+      - "18081:8080"
+
+volumes:
+  nginx_volume:
+    external: true
+  letsencrypt_certificates:
+    external: true
+  letsencrypt_challenges:
+    external: true
