@@ -1,0 +1,24 @@
+version: '2'
+
+services:
+  logioweb:
+    image: 'blacklabelops/nginx'
+    container_name: nginx_reverse_proxy
+    environment:
+      - 'SERVER1SERVER_NAME=test.example.com'
+      - 'SERVER1REVERSE_PROXY_LOCATION1=/'
+      - 'SERVER1REVERSE_PROXY_PASS1=http://172.17.0.1:8080/'
+    ports:
+      - '80:80'
+
+  keycloak:
+      image: jboss/keycloak
+      container_name: keycloak_server
+      hostname: keycloak
+      restart: unless-stopped
+      environment:
+        - KEYCLOAK_USER=admin
+        - KEYCLOAK_PASSWORD=admin
+        - PROXY_ADDRESS_FORWARDING=true
+      ports:
+        - "8080:8080"
