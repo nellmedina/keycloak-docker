@@ -13,8 +13,8 @@ services:
       - letsencrypt_challenges:/var/www/letsencrypt
     environment:
       - 'SERVER1SERVER_NAME=${KEYCLOAK_DOMAIN_NAME}'
-      - 'SERVER1REVERSE_PROXY_LOCATION1=/auth'
-      - 'SERVER1REVERSE_PROXY_PASS1=http://172.17.0.1:8080/'
+      - 'SERVER1REVERSE_PROXY_LOCATION1=/'
+      - 'SERVER1REVERSE_PROXY_PASS1=http://keycloak:8080/'
       - 'SERVER1HTTPS_ENABLED=${KEYCLOAK_HTTPS}'
       - 'SERVER1HTTP_ENABLED=${KEYCLOAK_HTTP}'
       - 'SERVER1LETSENCRYPT_CERTIFICATES=${KEYCLOAK_HTTPS}'
@@ -23,7 +23,7 @@ services:
       - 'SERVER1CERTIFICATE_TRUSTED=/etc/letsencrypt/live/${KEYCLOAK_DOMAIN_NAME_PARENT}/fullchain.pem'
       - 'SERVER1PROXY_APPLICATION=keycloak'
   keycloak:
-    image: jboss/keycloak
+    image: piotrnowicki/keycloak
     container_name: keycloak_server
     hostname: keycloak
     restart: unless-stopped
