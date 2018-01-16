@@ -13,7 +13,7 @@ services:
       - letsencrypt_challenges:/var/www/letsencrypt
     environment:
       - 'SERVER1SERVER_NAME=${KEYCLOAK_DOMAIN_NAME}'
-      - 'SERVER1REVERSE_PROXY_LOCATION1=/'
+      - 'SERVER1REVERSE_PROXY_LOCATION1=/auth'
       - 'SERVER1REVERSE_PROXY_PASS1=http://keycloak:8080/'
       - 'SERVER1HTTPS_ENABLED=${KEYCLOAK_HTTPS}'
       - 'SERVER1HTTP_ENABLED=${KEYCLOAK_HTTP}'
@@ -32,7 +32,7 @@ services:
       - KEYCLOAK_PASSWORD=admin
       - PROXY_ADDRESS_FORWARDING=true
     ports:
-      - "18081:8080"
+      - "8080:8080"
 
 volumes:
   nginx_volume:
