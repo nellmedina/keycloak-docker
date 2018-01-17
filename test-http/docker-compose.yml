@@ -1,24 +1,42 @@
 version: '2'
 
 services:
-  logioweb:
+  nginx:
     image: 'blacklabelops/nginx'
     container_name: nginx_reverse_proxy
     environment:
       - 'SERVER1SERVER_NAME=test.example.com'
       - 'SERVER1REVERSE_PROXY_LOCATION1=/'
-      - 'SERVER1REVERSE_PROXY_PASS1=http://172.17.0.1:8080/'
+      - 'SERVER1REVERSE_PROXY_PASS1=http://keycloak:8080/'
     ports:
       - '80:80'
 
+  keycloak_postgres:
+    image: postgres:latest
+    container_name: keycloak_postgres
+    restart: unless-stopped
+    ports:
+        - "15432:15432"
+    environment:
+        - POSTGRES_DB=keycloak
+        - POSTGRES_USER=keycloak
+        - POSTGRES_PASSWORD=keycloak
+        - POSTGRES_ROOT_PASSWORD=keycloak
   keycloak:
-      image: jboss/keycloak
-      container_name: keycloak_server
-      hostname: keycloak
-      restart: unless-stopped
-      environment:
-        - KEYCLOAK_USER=admin
-        - KEYCLOAK_PASSWORD=admin
-        - PROXY_ADDRESS_FORWARDING=true
-      ports:
-        - "8080:8080"
+    image: jboss/keycloak
+    container_name: keycloak_server_2
+    hostname: keycloak
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DATABASE=keycloak
+      - POSTGRES_USER=keycloak
+      - POSTGRES_PASSWORD=keycloak
+      - PROXY_ADDRESS_FORWARDING=true
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+      - POSTGRES_PORT_5432_TCP_ADDR=postgres
+      - POSTGRES_PORT_5432_TCP_PORT=5432
+    links:
+      - keycloak_postgres:postgres
+    ports:
+      - "8080:8080"

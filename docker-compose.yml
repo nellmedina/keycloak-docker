@@ -1,6 +1,27 @@
 version: "2"
 
 services:
+  nginx:
+      image: blacklabelops/nginx
+      container_name: nginx_server
+      ports:
+        - '443:443'
+        - '80:80'
+      volumes:
+        - nginx_volume:/home/nginx
+        - letsencrypt_certificates:/etc/letsencrypt
+        - letsencrypt_challenges:/var/www/letsencrypt
+      environment:
+        - 'SERVER1SERVER_NAME=keycloak.nellmedina.com'
+        - 'SERVER1REVERSE_PROXY_LOCATION1=/'
+        - 'SERVER1REVERSE_PROXY_PASS1=http://keycloak:8080/'
+        - 'SERVER1HTTPS_ENABLED=true'
+        - 'SERVER1HTTP_ENABLED=true'
+        - 'SERVER1LETSENCRYPT_CERTIFICATES=true'
+        - 'SERVER1CERTIFICATE_FILE=/etc/letsencrypt/live/mario.nellmedina.com/fullchain.pem'
+        - 'SERVER1CERTIFICATE_KEY=/etc/letsencrypt/live/mario.nellmedina.com/privkey.pem'
+        - 'SERVER1CERTIFICATE_TRUSTED=/etc/letsencrypt/live/mario.nellmedina.com/fullchain.pem'
+        - 'SERVER1PROXY_APPLICATION=keycloak'
   keycloak_postgres:
       image: postgres:latest
       container_name: keycloak_postgres
@@ -17,6 +38,7 @@ services:
   keycloak:
       image: jboss/keycloak
       container_name: keycloak_server
+      hostname: keycloak
       restart: unless-stopped
       environment:
         - POSTGRES_DATABASE=keycloak
