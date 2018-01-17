@@ -8,13 +8,13 @@ services:
       - '443:443'
       - '80:80'
     volumes:
-      - ./conf.d:/etc/nginx/conf.d
+      - nginx_volume:/home/nginx
       - letsencrypt_certificates:/etc/letsencrypt
       - letsencrypt_challenges:/var/www/letsencrypt
     environment:
       - 'SERVER1SERVER_NAME=${KEYCLOAK_DOMAIN_NAME}'
       - 'SERVER1REVERSE_PROXY_LOCATION1=/'
-      - 'SERVER1REVERSE_PROXY_PASS1=http://keycloak:8080/'
+      - 'SERVER1REVERSE_PROXY_PASS1=http://172.17.0.1:8080/'
       - 'SERVER1HTTPS_ENABLED=${KEYCLOAK_HTTPS}'
       - 'SERVER1HTTP_ENABLED=${KEYCLOAK_HTTP}'
       - 'SERVER1LETSENCRYPT_CERTIFICATES=${KEYCLOAK_HTTPS}'
