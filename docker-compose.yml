@@ -52,12 +52,15 @@ services:
       links:
         - keycloak_postgres:postgres
       ports:
-        - "8080:8080"
+        - "18080:8080"
       volumes:
         - keycloak_volume:/data
 
 volumes:
+  nginx_volume:
+    external: true
   keycloak_volume:
     external: true
   keycloak_postgresql_volume:
     external: true
+
