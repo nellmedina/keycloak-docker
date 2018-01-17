@@ -63,4 +63,8 @@ volumes:
     external: true
   keycloak_postgresql_volume:
     external: true
+  letsencrypt_certificates:
+    external: true
+  letsencrypt_challenges:
+    external: true
 
