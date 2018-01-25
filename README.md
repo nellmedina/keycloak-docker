@@ -11,7 +11,7 @@ docker volume create keycloak_postgresql_volume
 
 2. Run `docker-compose up`
 
-3. Then add a new socket-binding element to the socket-binding-group element of Keycloak `standalone.xml`
+3. Inside the keycloak container, add a new socket-binding element to the socket-binding-group element of Keycloak `standalone.xml`
 
 ```xml
 <socket-binding-group name="standard-sockets" default-interface="public"
@@ -21,10 +21,14 @@ docker volume create keycloak_postgresql_volume
     ...
 </socket-binding-group>
 
-
-update REALM set ssl_required='NONE' where id = 'master';
-
-psql -d mydb -U myuser
 ```
 
-4. Restart the keycloak server by `docker restart keycloak_server`
+4. Inside the postgres container, execute this SQL to allow https.
+
+```bash
+psql -d mydb -U myuser
+
+update REALM set ssl_required='NONE' where id = 'master';
+```
+
+5. Restart the keycloak server and access keycloak at https://keycloak.nellmedina.com.
