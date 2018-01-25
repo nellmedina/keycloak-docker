@@ -1,5 +1,5 @@
 
-#### Install Keycloak on Nginx proxy server secured by Https
+### Install Keycloak on Nginx proxy server with Https
 
 1. Create the volumes
 
@@ -31,4 +31,23 @@ psql -d mydb -U myuser
 update REALM set ssl_required='NONE' where id = 'master';
 ```
 
-5. Restart the keycloak server and access keycloak at https://keycloak.nellmedina.com.
+5. The `blacklabelops/nginx` creates the nginx configuration automatically which will need editing to make proxy work for keycloak.
+
+```bash
+# go to /etc/nginx/conf.d/server1.conf and add an upstream just above the server block
+upstream keycloak.nellmedina.com {
+     server keycloak:8080;
+}
+
+# go to /etc/nginx/conf.d/server1/reverseProxy.conf
+location / {
+          proxy_pass http://keycloak.nellmedina.com;
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $remote_addr;
+          proxy_set_header X-Forwarded-Proto https;
+          proxy_set_header X-Forwarded-Port 443;
+        }
+``` 
+
+6. Restart the nginx and keycloak server then access keycloak at https://keycloak.nellmedina.com.
